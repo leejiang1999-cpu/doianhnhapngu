@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Đợi Anh Nhập Ngũ - 24 Tháng Yêu Thương</title>
+<style>
+body{margin:0;padding:0;background:#1b4332;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial,sans-serif;color:#fff;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+h1{font-size:17px;margin:8px 0 4px;color:#ffd166;text-transform:uppercase;text-align:center}
+p{font-size:12px;margin:0 0 8px;color:#b7e4c7;text-align:center}
+canvas{border:4px solid #ffd166;border-radius:12px;max-width:95vw;background:#8ecae6;display:block}
+.ft{font-size:11px;color:#95d5b2;margin-top:8px;text-align:center}
+</style>
+</head>
+<body>
+<h1>💘 Đợi Anh Nhập Ngũ - 24 Tháng Yêu</h1>
+<p>Chạm màn hình bắn cung trúng trái tim - Qua 24 tháng đợi chờ!</p>
+<canvas id="c" width="330" height="480"></canvas>
+<div class="ft">Tác giả: <b>Niê Ngọc Hiếu</b> | Phố Đi Bộ Hồ Ea Kao</div>
+<script>
+var c=document.getElementById("c"),ctx=c.getContext("2d");
+var mIdx=0,arrows=5,shotList=[],start=false,over=false,winAll=false,wv=0,ang=-Math.PI/2,deadT=0,msg="",msgT=0;
+var topM=0;
+try{topM=parseInt(localStorage.getItem("ek_army_best")||"0");}catch(e){}
+var ranks=[
+{n:"Chớm Nở Tương Tư",i:"❤️"},{n:"Gửi Gió Trao Thương",i:"🧡"},{n:"Ánh Mắt Mong Chờ",i:"💛"},{n:"Nhịp Đập Chung Đôi",i:"💚"},
+{n:"Vấn Vương Kỷ Niệm",i:"💙"},{n:"Nửa Năm Hẹn Ước",i:"💜"},{n:"Sợi Chỉ Hồng Vương",i:"💖"},{n:"Trăng Non Đợi Bước",i:"💗"},
+{n:"Mùa Thu Thương Nhớ",i:"💓"},{n:"Vững Lòng Son Sắt",i:"💞"},{n:"Gió Đông Ấm Áp",i:"💕"},{n:"Tròn Năm Chung Thủy",i:"💘"},
+{n:"Bình Minh Hạnh Phúc",i:"💝"},{n:"Khúc Hát Giao Mùa",i:"🌹"},{n:"Nắng Hạ Chờ Mong",i:"🌸"},{n:"Biển Xanh Sóng Vỗ",i:"🌺"},
+{n:"Vượt Ngàn Thử Thách",i:"💐"},{n:"Mười Tám Trăng Tròn",i:"✨"},{n:"Ngôi Sao Dẫn Lối",i:"🌟"},{n:"Thiên Đường Tình Ái",i:"💫"},
+{n:"Cánh Chim Bồ Câu",i:"🕊️"},{n:"Bến Bờ Sum Họp",i:"👑"},{n:"Chạm Ngõ Ngày Về",i:"💍"},{n:"Vĩnh Kết Đồng Tâm",i:"💎"}
+];
+var clouds=[{x:30,y:45,s:0.25},{x:175,y:75,s:0.2},{x:285,y:40,s:0.3}];
+var doves=[{x:80,y:65,s:0.8},{x:220,y:95,s:0.7},{x:310,y:55,s:0.9}];
+var heart={x:165,y:135,vx:1.8,vy:0,r:24,t:0};
+function resetHeart(lv){
+heart.y=95+Math.random()*95;
+heart.vx=(Math.random()>0.5?1:-1)*(1.6+lv*0.18);
+heart.r=Math.max(14,25-lv*0.4);
+}
+function initGame(){
+mIdx=0;arrows=5;shotList=[];over=false;winAll=false;msg="";msgT=0;resetHeart(0);
+}
+initGame();
+function fire(tx,ty){
+if(!start){start=true;return;}
+if(over||winAll){if(Date.now()-deadT<1500)return;initGame();return;}
+if(arrows<=0)return;
+arrows--;
+var dx=tx-165,dy=ty-405;
+var a=Math.atan2(dy,dx);
+if(a>-0.25)a=-0.25;
+if(a<-Math.PI+0.25)a=-Math.PI+0.25;
+ang=a;
+shotList.push({x:165,y:405,vx:Math.cos(a)*8.5,vy:Math.sin(a)*8.5,a:a});
+}
+c.addEventListener("touchstart",function(e){
+if(e.cancelable)e.preventDefault();
+var rect=c.getBoundingClientRect();
+var touch=e.touches;
+var tx=(touch.clientX-rect.left)*(330/rect.width);
+var ty=(touch.clientY-rect.top)*(480/rect.height);
+fire(tx,ty);
+},{passive:false});
+c.addEventListener("mousedown",function(e){
+var rect=c.getBoundingClientRect();
+var tx=(e.clientX-rect.left)*(330/rect.width);
+var ty=(e.clientY-rect.top)*(480/rect.height);
+fire(tx,ty);
+});
+function drawGirl(x,y){
+ctx.fillStyle="#2b2d42";ctx.beginPath();ctx.arc(x,y-22,11,0,Math.PI*2);ctx.fill();
+ctx.beginPath();ctx.moveTo(x-11,y-20);ctx.lineTo(x-15,y+5);ctx.lineTo(x+15,y+5);ctx.lineTo(x+11,y-20);ctx.fill();
+ctx.fillStyle="#ffccd5";ctx.beginPath();ctx.arc(x,y-20,8,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="#ff4d6d";ctx.beginPath();ctx.moveTo(x-8,y-10);ctx.lineTo(x+8,y-10);ctx.lineTo(x+14,y+18);ctx.lineTo(x-14,y+18);ctx.closePath();ctx.fill();
+ctx.save();ctx.translate(x,y-8);ctx.rotate(ang+Math.PI/2);
+ctx.strokeStyle="#ffd166";ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-12,18,Math.PI*1.15,Math.PI*1.85);ctx.stroke();
+ctx.strokeStyle="#fff";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-16,-20);ctx.lineTo(16,-20);ctx.stroke();
+ctx.restore();
+}
+function drawGate(){
+ctx.fillStyle="#d62828";ctx.fillRect(10,365,10,65);ctx.fillRect(110,365,10,65);
+ctx.fillStyle="#9b2226";ctx.beginPath();ctx.moveTo(2,366);ctx.lineTo(65,346);ctx.lineTo(128,366);ctx.closePath();ctx.fill();
+ctx.fillStyle="#ffd166";ctx.fillRect(5,365,120,16);
+ctx.fillStyle="#9b2226";ctx.font="bold 7px Arial";ctx.textAlign="center";ctx.fillText("CỔNG CHÀO EA KAO",65,376);
+ctx.fillStyle="#2d6a4f";ctx.fillRect(215,385,105,22);ctx.strokeStyle="#ffd166";ctx.strokeRect(215,385,105,22);
+ctx.fillStyle="#ffd166";ctx.font="bold 8px Arial";ctx.fillText("PHỐ ĐI BỘ EA KAO",267,399);
+}
+function loop(){
+wv+=0.5;
+for(var k=0;k<clouds.length;k++){clouds[k].x-=clouds[k].s;if(clouds[k].x<-50)clouds[k].x=360;}
+for(var k=0;k<doves.length;k++){doves[k].x+=doves[k].s;if(doves[k].x>350)doves[k].x=-30;}
+if(start&&!over&&!winAll){
+heart.t+=0.05+(mIdx*0.005);
+heart.x+=heart.vx;
+if(heart.x<35||heart.x>295)heart.vx=-heart.vx;
+if(mIdx>=3)heart.y+=Math.sin(heart.t)*(1.2+mIdx*0.14);
+if(heart.y<75)heart.y=75;if(heart.y>245)heart.y=245;
+for(var i=shotList.length-1;i>=0;i--){
+var s=shotList[i];s.x+=s.vx;s.y+=s.vy;
+var dist=Math.hypot(s.x-heart.x,s.y-heart.y);
+if(dist<heart.r+12){
+shotList.splice(i,1);
+mIdx++;arrows++;
+if(mIdx>topM){topM=mIdx;try{localStorage.setItem("ek_army_best",topM);}catch(e){}}
+if(mIdx>=24){winAll=true;deadT=Date.now();}
+else{msg="💘 ĐÃ QUA THÁNG "+mIdx+": +1 MŨI TÊN!";msgT=80;resetHeart(mIdx);}
+continue;
+}
+if(s.x<-20||s.x>350||s.y<-20)shotList.splice(i,1);
+}
+if(arrows===0&&shotList.length===0&&!winAll){over=true;deadT=Date.now();}
+}
+var sky=ctx.createLinearGradient(0,0,0,430);sky.addColorStop(0,"#4ea8de");sky.addColorStop(1,"#caf0f8");
+ctx.fillStyle=sky;ctx.fillRect(0,0,330,430);
+ctx.fillStyle="rgba(255,255,255,0.92)";
+for(var k=0;k<clouds.length;k++){var cl=clouds[k];ctx.beginPath();ctx.arc(cl.x,cl.y,15,0,Math.PI*2);ctx.arc(cl.x+15,cl.y-5,18,0,Math.PI*2);ctx.arc(cl.x+30,cl.y,14,0,Math.PI*2);ctx.fill();}
+ctx.font="18px Arial";ctx.textAlign="center";
+for(var k=0;k<doves.length;k++){ctx.fillText("🕊️",doves[k].x,doves[k].y+Math.sin(wv*0.1+k)*4);}
+ctx.fillStyle="#74c69d";ctx.beginPath();ctx.moveTo(0,430);ctx.quadraticCurveTo(165,355,330,430);ctx.fill();
+drawGate();
+ctx.fillStyle="#e9c46a";ctx.fillRect(0,430,330,50);
+ctx.fillStyle="#d4a373";for(var x=10;x<330;x+=35)ctx.fillRect(x,445,18,4);
+var curRank=ranks[Math.min(mIdx,23)];
+ctx.font=(heart.r*1.8)+"px Arial";ctx.textAlign="center";
+ctx.fillText(curRank.i,heart.x,heart.y+heart.r*0.6);
+for(var i=0;i<shotList.length;i++){
+var s=shotList[i];ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.a);
+ctx.strokeStyle="#d62828";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-14,0);ctx.lineTo(14,0);ctx.stroke();
+ctx.fillStyle="#ffd166";ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(8,-5);ctx.lineTo(8,5);ctx.fill();
+ctx.restore();
+}
+drawGirl(165,425);
+ctx.fillStyle="rgba(27,67,50,0.85)";ctx.fillRect(10,8,310,48);ctx.strokeStyle="#ffd166";ctx.strokeRect(10,8,310,48);
+ctx.fillStyle="#ffd166";ctx.font="bold 13px Arial";ctx.textAlign="center";
+ctx.fillText("Tháng "+(mIdx+1)+"/24: "+curRank.n+" "+curRank.i,165,27);
+ctx.fillStyle="#fff";ctx.font="bold 12px Arial";
+ctx.fillText("🏹 Số mũi tên còn lại: "+arrows+"  |  Kỷ lục: "+topM+"/24 tháng",165,46);
+if(msgT>0){msgT--;ctx.fillStyle="#d62828";ctx.font="bold 14px Arial";ctx.fillText(msg,165,76);}
+if(!start){
+ctx.fillStyle="rgba(0,0,0,0.72)";ctx.fillRect(15,105,300,205);ctx.strokeStyle="#ffd166";ctx.lineWidth=2;ctx.strokeRect(15,105,300,205);
+ctx.fillStyle="#ffd166";ctx.font="bold 16px Arial";ctx.fillText("ĐỢI ANH NHẬP NGŨ - 24 THÁNG",165,138);
+ctx.fillStyle="#80ed99";ctx.font="bold 13px Arial";ctx.fillText("Tác giả: Niê Ngọc Hiếu",165,162);
+ctx.fillStyle="#fff";ctx.font="12px Arial";
+ctx.fillText("Chạm vào bầu trời để bắn mũi tên tình yêu!",165,192);
+ctx.fillText("Trúng 1 trái tim = Vượt 1 tháng + Thêm 1 mũi tên 🏹",165,214);
+ctx.fillText("Chinh phục đủ 24 cấp bậc tình yêu đón anh về!",165,236);
+ctx.fillStyle="#ffd166";ctx.font="bold 14px Arial";ctx.fillText("👉 CHẠM MÀN HÌNH ĐỂ BẮT ĐẦU",165,278);
+}
+if(over||winAll){
+var canR=(Date.now()-deadT>=1500);
+ctx.fillStyle="rgba(0,0,0,0.86)";ctx.fillRect(20,115,290,235);ctx.strokeStyle="#ffd166";ctx.lineWidth=3;ctx.strokeRect(20,115,290,235);
+ctx.fillStyle=winAll?"#80ed99":"#ef476f";ctx.font="bold 18px Arial";
+ctx.fillText(winAll?"🎉 HOÀN THÀNH 24 THÁNG ĐỢI CHỜ!":"💔 HẾT MŨI TÊN RỒI!",165,152);
+ctx.fillStyle="#ffd166";ctx.font="bold 14px Arial";
+ctx.fillText(winAll?"Cấp bậc tối cao: Vĩnh Kết Đồng Tâm 💎":"Đã vượt qua: "+mIdx+"/24 tháng",165,182);
+ctx.fillStyle="#fff";ctx.font="13px Arial";
+ctx.fillText("Danh hiệu: "+ranks[Math.min(mIdx,23)].n+" "+ranks[Math.min(mIdx,23)].i,165,208);
+ctx.fillText("Kỷ lục cá nhân: "+topM+"/24 tháng",165,232);
+ctx.fillStyle="#b7e4c7";ctx.font="11px Arial";ctx.fillText("Tác giả: Niê Ngọc Hiếu - Phố Đi Bộ Ea Kao",165,264);
+ctx.fillStyle=canR?"#ffd166":"#888";ctx.font="bold 14px Arial";
+ctx.fillText(canR?"👉 Chạm màn hình để chơi lại":"⏳ Đang lưu thành tích...",165,310);
+}
+requestAnimationFrame(loop);}
+loop();
+</script>
+</body>
+</html>
