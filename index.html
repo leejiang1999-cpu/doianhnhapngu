@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Đợi Anh Nhập Ngũ - 24 Tháng Yêu</title>
 <style>
-body{margin:0;background:#1b4332;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial,sans-serif;color:#fff;touch-action:none;user-select:none}
-h1{font-size:16px;margin:6px 0 2px;color:#ffd166;text-transform:uppercase}p{font-size:11px;margin:0 0 6px;color:#b7e4c7}
-canvas{border:4px solid #ffd166;border-radius:12px;max-width:95vw;background:#8ecae6;touch-action:none;display:block}.ft{font-size:11px;color:#95d5b2;margin-top:6px}
+html,body{margin:0;padding:0;width:100%;height:100%;position:fixed;overflow:hidden;background:#1b4332;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial,sans-serif;color:#fff;touch-action:none;-webkit-user-select:none;user-select:none}
+h1{font-size:16px;margin:4px 0 2px;color:#ffd166;text-transform:uppercase}p{font-size:11px;margin:0 0 6px;color:#b7e4c7}
+canvas{border:4px solid #ffd166;border-radius:12px;max-width:94vw;max-height:76vh;background:#8ecae6;touch-action:none;display:block}.ft{font-size:11px;color:#95d5b2;margin-top:6px}
 </style>
 </head>
 <body>
@@ -21,21 +21,21 @@ var cls=[{x:30,y:45,s:.25},{x:175,y:75,s:.2},{x:285,y:40,s:.3}],dvs=[{x:80,y:65,
 function dist(x1,y1,x2,y2){var a=x1-x2,b=y1-y2;return Math.sqrt(a*a+b*b);}
 function rstH(lv){ht.y=95+Math.random()*90;ht.vx=(Math.random()>.5?1:-1)*(1.6+lv*.18);ht.r=Math.max(14,25-lv*.4);cw.y=225+Math.random()*55;}
 function init(){mIdx=0;arw=5;sh=[];ov=0;wn=0;msg="";mT=0;drg=0;pl=0;cw.x=90;cw.vx=2.1;rstH(0);}init();
-function pos(e){var r=c.getBoundingClientRect(),p=(e.touches&&e.touches.length>0)?e.touches:e;return{x:(p.clientX-r.left)*(330/r.width),y:(p.clientY-r.top)*(480/r.height)};}
+function pos(e){var r=c.getBoundingClientRect(),p=(e.touches&&e.touches.length>0)?e.touches.item(0):e;return{x:(p.clientX-r.left)*(330/r.width),y:(p.clientY-r.top)*(480/r.height)};}
 function down(e){if(e.cancelable)e.preventDefault();if(!st){st=1;return;}if(ov||wn){if(Date.now()-dT<1500)return;init();return;}if(arw<=0)return;var p=pos(e);drg=1;sx=p.x;sy=p.y;pl=0;}
-function move(e){if(!drg)return;if(e.cancelable)e.preventDefault();var p=pos(e),dx=sx-p.x,dy=sy-p.y,d=dist(0,0,dx,dy);if(d>15){pl=Math.min(d,95);var a=Math.atan2(dy,dx);if(a>-.18)a=-.18;if(a<-2.96)a=-2.96;ang=a;var s=5.5+(pl/95)*7.5;vxA=Math.cos(a)*s;vyA=Math.sin(a)*s;}else pl=0;}
-function up(){if(!drg)return;drg=0;if(pl>=18&&arw>0){arw--;sh.push({x:165,y:405,vx:vxA,vy:vyA,a:ang,bp:Math.random()<0.4});}pl=0;}
-c.addEventListener("touchstart",down,{passive:false});c.addEventListener("touchmove",move,{passive:false});c.addEventListener("touchend",up);c.addEventListener("mousedown",down);window.addEventListener("mousemove",move);window.addEventListener("mouseup",up);
+function move(e){if(!drg)return;if(e.cancelable)e.preventDefault();var p=pos(e),dx=sx-p.x,dy=sy-p.y,d=dist(0,0,dx,dy);if(d>12){pl=Math.min(d,95);var a=Math.atan2(dy,dx);if(a>-.18)a=-.18;if(a<-2.96)a=-2.96;ang=a;var s=5.5+(pl/95)*7.5;vxA=Math.cos(a)*s;vyA=Math.sin(a)*s;}else pl=0;}
+function up(e){if(!drg)return;if(e&&e.cancelable)e.preventDefault();drg=0;if(pl>=15&&arw>0){arw--;sh.push({x:165,y:405,vx:vxA,vy:vyA,a:ang,bp:Math.random()<0.4});}pl=0;}
+document.addEventListener("touchstart",down,{passive:false});document.addEventListener("touchmove",move,{passive:false});document.addEventListener("touchend",up,{passive:false});document.addEventListener("mousedown",down);document.addEventListener("mousemove",move);document.addEventListener("mouseup",up);
 function loop(){
 wv+=.5;for(var k=0;k<3;k++){cls[k].x-=cls[k].s;if(cls[k].x<-50)cls[k].x=360;dvs[k].x+=dvs[k].s;if(dvs[k].x>350)dvs[k].x=-30;}
 if(st&&!ov&&!wn){
 ht.t+=.05+mIdx*.005;ht.x+=ht.vx;if(ht.x<35||ht.x>295)ht.vx=-ht.vx;if(mIdx>=3)ht.y+=Math.sin(ht.t)*(1.2+mIdx*.14);if(ht.y<75)ht.y=75;if(ht.y>220)ht.y=220;
-cw.t+=.06;var aS=sh.length>0?sh:null;
+cw.t+=.06;var aS=sh.length>0?sh.at(0):null;
 if(aS&&!aS.bp&&aS.y>cw.y-15){var pX=Math.max(30,Math.min(300,aS.x+aS.vx*((cw.y-aS.y)/aS.vy))),df=pX-cw.x,mS=3.6+mIdx*.15;if(Math.abs(df)>2){cw.vx=(df>0?1:-1)*Math.min(Math.abs(df)*.18,mS);cw.x+=cw.vx;}}
 else{var bS=2+mIdx*.12;if(Math.abs(cw.vx)!==bS)cw.vx=(cw.vx>=0?1:-1)*bS;cw.x+=cw.vx;if(cw.x<30||cw.x>300)cw.vx=-cw.vx;}
 cw.y+=Math.sin(cw.t)*1.1;if(cw.y<205)cw.y=205;if(cw.y>310)cw.y=310;
 for(var i=sh.length-1;i>=0;i--){
-var s=sh[i];s.vy+=.14;s.x+=s.vx;s.y+=s.vy;s.a=Math.atan2(s.vy,s.vx);
+var s=sh.at(i);s.vy+=.14;s.x+=s.vx;s.y+=s.vy;s.a=Math.atan2(s.vy,s.vx);
 if(!s.bp&&dist(s.x,s.y,cw.x,cw.y)<cw.r+10){sh.splice(i,1);msg="🦅 QUẠ ĐEN CẢN PHÁ MẤT RỒI!";mT=75;continue;}
 if(dist(s.x,s.y,ht.x,ht.y)<ht.r+12){sh.splice(i,1);mIdx++;arw+=2;if(mIdx>topM){topM=mIdx;try{localStorage.setItem("ek_army",topM);}catch(e){}}if(mIdx>=24){wn=1;dT=Date.now();}else{msg="💘 QUA THÁNG "+mIdx+": TẶNG THÊM MŨI TÊN (+1)!";mT=85;rstH(mIdx);}continue;}
 if(s.x<-20||s.x>350||s.y<-20||s.y>490)sh.splice(i,1);
@@ -43,23 +43,23 @@ if(s.x<-20||s.x>350||s.y<-20||s.y>490)sh.splice(i,1);
 if(arw===0&&sh.length===0&&!wn){ov=1;dT=Date.now();}
 }
 var sky=ctx.createLinearGradient(0,0,0,430);sky.addColorStop(0,"#4ea8de");sky.addColorStop(1,"#caf0f8");ctx.fillStyle=sky;ctx.fillRect(0,0,330,430);
-ctx.fillStyle="rgba(255,255,255,.9)";for(var k=0;k<3;k++){var cl=cls[k];ctx.beginPath();ctx.arc(cl.x,cl.y,15,0,6.28);ctx.arc(cl.x+15,cl.y-5,18,0,6.28);ctx.arc(cl.x+30,cl.y,14,0,6.28);ctx.fill();}
-ctx.font="18px Arial";ctx.textAlign="center";for(var k=0;k<3;k++)ctx.fillText("🕊️",dvs[k].x,dvs[k].y+Math.sin(wv*.1+k)*4);
+ctx.fillStyle="rgba(255,255,255,.9)";for(var k=0;k<3;k++){var cl=cls.at(k);ctx.beginPath();ctx.arc(cl.x,cl.y,15,0,6.28);ctx.arc(cl.x+15,cl.y-5,18,0,6.28);ctx.arc(cl.x+30,cl.y,14,0,6.28);ctx.fill();}
+ctx.font="18px Arial";ctx.textAlign="center";for(var k=0;k<3;k++){var dv=dvs.at(k);ctx.fillText("🕊️",dv.x,dv.y+Math.sin(wv*.1+k)*4);}
 ctx.fillStyle="#74c69d";ctx.beginPath();ctx.moveTo(0,430);ctx.quadraticCurveTo(165,355,330,430);ctx.fill();
 ctx.fillStyle="#d62828";ctx.fillRect(10,365,10,65);ctx.fillRect(110,365,10,65);ctx.fillStyle="#9b2226";ctx.beginPath();ctx.moveTo(2,366);ctx.lineTo(65,346);ctx.lineTo(128,366);ctx.fill();
 ctx.fillStyle="#ffd166";ctx.fillRect(5,365,120,16);ctx.fillStyle="#9b2226";ctx.font="bold 7px Arial";ctx.fillText("CỔNG CHÀO EA KAO",65,376);
 ctx.fillStyle="#2d6a4f";ctx.fillRect(215,385,105,22);ctx.strokeStyle="#ffd166";ctx.strokeRect(215,385,105,22);ctx.fillStyle="#ffd166";ctx.font="bold 8px Arial";ctx.fillText("PHỐ ĐI BỘ EA KAO",267,399);
 ctx.fillStyle="#e9c46a";ctx.fillRect(0,430,330,50);ctx.fillStyle="#d4a373";for(var x=10;x<330;x+=35)ctx.fillRect(x,445,18,4);
-if(drg&&pl>=18){ctx.fillStyle="#ffd166";for(var t=3;t<=27;t+=3){var px=165+vxA*t,py=405+vyA*t+.07*t*t;if(py<65)break;ctx.beginPath();ctx.arc(px,py,3-t*.06,0,6.28);ctx.fill();}}
-var rk=rks[Math.min(mIdx,23)],ic=rk.split(" ").pop();ctx.font=(ht.r*1.8)+"px Arial";ctx.fillText(ic,ht.x,ht.y+ht.r*.6);
+if(drg&&pl>=15){ctx.fillStyle="#ffd166";for(var t=3;t<=27;t+=3){var px=165+vxA*t,py=405+vyA*t+.07*t*t;if(py<65)break;ctx.beginPath();ctx.arc(px,py,3-t*.06,0,6.28);ctx.fill();}}
+var rk=rks.at(Math.min(mIdx,23)),ic=rk.split(" ").pop();ctx.font=(ht.r*1.8)+"px Arial";ctx.fillText(ic,ht.x,ht.y+ht.r*.6);
 ctx.save();ctx.translate(cw.x,cw.y);if(cw.vx<0)ctx.scale(-1,1);var fl=Math.sin(wv*.35)*8;ctx.fillStyle="#111";ctx.beginPath();ctx.ellipse(0,0,15,9,0,0,6.28);ctx.fill();ctx.beginPath();ctx.arc(12,-4,7,0,6.28);ctx.fill();ctx.fillStyle="#ffb703";ctx.beginPath();ctx.moveTo(18,-6);ctx.lineTo(25,-3);ctx.lineTo(18,-1);ctx.fill();ctx.fillStyle="#ef233c";ctx.beginPath();ctx.arc(14,-5,2,0,6.28);ctx.fill();ctx.fillStyle="#222";ctx.beginPath();ctx.moveTo(-4,-2);ctx.lineTo(-14,-14+fl);ctx.lineTo(4,-5);ctx.fill();ctx.restore();
-for(var i=0;i<sh.length;i++){var s=sh[i];ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.a);ctx.strokeStyle=s.bp?"#ffd166":"#d62828";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-14,0);ctx.lineTo(14,0);ctx.stroke();ctx.fillStyle="#ffd166";ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(8,-5);ctx.lineTo(8,5);ctx.fill();ctx.restore();}
+for(var i=0;i<sh.length;i++){var s=sh.at(i);ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.a);ctx.strokeStyle=s.bp?"#ffd166":"#d62828";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-14,0);ctx.lineTo(14,0);ctx.stroke();ctx.fillStyle="#ffd166";ctx.beginPath();ctx.moveTo(16,0);ctx.lineTo(8,-5);ctx.lineTo(8,5);ctx.fill();ctx.restore();}
 var gx=165,gy=425;ctx.fillStyle="#2b2d42";ctx.beginPath();ctx.arc(gx,gy-22,11,0,6.28);ctx.fill();ctx.beginPath();ctx.moveTo(gx-11,gy-20);ctx.lineTo(gx-15,gy+5);ctx.lineTo(gx+15,gy+5);ctx.lineTo(gx+11,gy-20);ctx.fill();ctx.fillStyle="#ffccd5";ctx.beginPath();ctx.arc(gx,gy-20,8,0,6.28);ctx.fill();ctx.fillStyle="#ff4d6d";ctx.beginPath();ctx.moveTo(gx-8,gy-10);ctx.lineTo(gx+8,gy-10);ctx.lineTo(gx+14,gy+18);ctx.lineTo(gx-14,gy+18);ctx.fill();
-ctx.save();ctx.translate(gx,gy-16);ctx.rotate(ang+1.57);var pO=(pl/95)*14,tr=Math.min(Math.floor(mIdx/6),3),cols=["#8d5524","#e0fbfc","#ffd166","#ff4d6d"];if(tr>=1){ctx.shadowColor=cols[tr];ctx.shadowBlur=10;}ctx.strokeStyle=cols[tr];ctx.lineWidth=3.5+tr*.6;ctx.beginPath();ctx.arc(0,-10,20+tr*1.5,3.45,5.97);ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle="#fff";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-18-tr,-18);ctx.lineTo(0,-18+pO);ctx.lineTo(18+tr,-18);ctx.stroke();if(arw>0){ctx.strokeStyle=tr>=2?"#ffd166":"#d62828";ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(0,-18+pO);ctx.lineTo(0,-42+pO);ctx.stroke();ctx.fillStyle="#ffd166";ctx.beginPath();ctx.moveTo(0,-47+pO);ctx.lineTo(-4.5,-38+pO);ctx.lineTo(4.5,-38+pO);ctx.fill();}ctx.restore();
+ctx.save();ctx.translate(gx,gy-16);ctx.rotate(ang+1.57);var pO=(pl/95)*14,tr=Math.min(Math.floor(mIdx/6),3),cols=["#8d5524","#e0fbfc","#ffd166","#ff4d6d"];if(tr>=1){ctx.shadowColor=cols.at(tr);ctx.shadowBlur=10;}ctx.strokeStyle=cols.at(tr);ctx.lineWidth=3.5+tr*.6;ctx.beginPath();ctx.arc(0,-10,20+tr*1.5,3.45,5.97);ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle="#fff";ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-18-tr,-18);ctx.lineTo(0,-18+pO);ctx.lineTo(18+tr,-18);ctx.stroke();if(arw>0){ctx.strokeStyle=tr>=2?"#ffd166":"#d62828";ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(0,-18+pO);ctx.lineTo(0,-42+pO);ctx.stroke();ctx.fillStyle="#ffd166";ctx.beginPath();ctx.moveTo(0,-47+pO);ctx.lineTo(-4.5,-38+pO);ctx.lineTo(4.5,-38+pO);ctx.fill();}ctx.restore();
 ctx.fillStyle="rgba(27,67,50,.85)";ctx.fillRect(10,8,310,48);ctx.strokeStyle="#ffd166";ctx.strokeRect(10,8,310,48);ctx.fillStyle="#ffd166";ctx.font="bold 13px Arial";ctx.fillText("Tháng "+(mIdx+1)+"/24: "+rk,165,27);ctx.fillStyle="#fff";ctx.font="bold 12px Arial";ctx.fillText("🏹 Mũi tên: "+arw+"  |  Kỷ lục: "+topM+"/24 tháng",165,46);
 if(mT>0){mT--;ctx.fillStyle="#d62828";ctx.font="bold 13px Arial";ctx.fillText(msg,165,76);}
 if(!st){ctx.fillStyle="rgba(0,0,0,.72)";ctx.fillRect(15,105,300,205);ctx.strokeStyle="#ffd166";ctx.lineWidth=2;ctx.strokeRect(15,105,300,205);ctx.fillStyle="#ffd166";ctx.font="bold 16px Arial";ctx.fillText("ĐỢI ANH NHẬP NGŨ - 24 THÁNG",165,138);ctx.fillStyle="#80ed99";ctx.font="bold 13px Arial";ctx.fillText("Tác giả: Niê Ngọc Hiếu",165,162);ctx.fillStyle="#fff";ctx.font="12px Arial";ctx.fillText("Kéo ngược dây cung để ngắm bắn trái tim!",165,192);ctx.fillText("Coi chừng con quạ đen bay đón đầu cản mũi tên!",165,214);ctx.fillText("Trúng tim được hoàn tên + tặng thêm 1 tên 🏹",165,236);ctx.fillStyle="#ffd166";ctx.font="bold 14px Arial";ctx.fillText("👉 CHẠM MÀN HÌNH ĐỂ BẮT ĐẦU",165,278);}
-if(ov||wn){var canR=(Date.now()-dT>=1500);ctx.fillStyle="rgba(0,0,0,.86)";ctx.fillRect(20,115,290,235);ctx.strokeStyle="#ffd166";ctx.lineWidth=3;ctx.strokeRect(20,115,290,235);ctx.fillStyle=wn?"#80ed99":"#ef476f";ctx.font="bold 18px Arial";ctx.fillText(wn?"🎉 HOÀN THÀNH 24 THÁNG ĐỢI CHỜ!":"💔 HẾT MŨI TÊN RỒI!",165,152);ctx.fillStyle="#ffd166";ctx.font="bold 14px Arial";ctx.fillText(wn?"Cấp bậc: Vĩnh Kết Đồng Tâm 💎":"Đã vượt qua: "+mIdx+"/24 tháng",165,182);ctx.fillStyle="#fff";ctx.font="13px Arial";ctx.fillText("Danh hiệu: "+rks[Math.min(mIdx,23)],165,208);ctx.fillText("Kỷ lục cá nhân: "+topM+"/24 tháng",165,232);ctx.fillStyle="#b7e4c7";ctx.font="11px Arial";ctx.fillText("Tác giả: Niê Ngọc Hiếu - Phố Đi Bộ Ea Kao",165,264);ctx.fillStyle=canR?"#ffd166":"#888";ctx.font="bold 14px Arial";ctx.fillText(canR?"👉 Chạm màn hình để chơi lại":"⏳ Đang lưu thành tích...",165,310);}
+if(ov||wn){var canR=(Date.now()-dT>=1500);ctx.fillStyle="rgba(0,0,0,.86)";ctx.fillRect(20,115,290,235);ctx.strokeStyle="#ffd166";ctx.lineWidth=3;ctx.strokeRect(20,115,290,235);ctx.fillStyle=wn?"#80ed99":"#ef476f";ctx.font="bold 18px Arial";ctx.fillText(wn?"🎉 HOÀN THÀNH 24 THÁNG ĐỢI CHỜ!":"💔 HẾT MŨI TÊN RỒI!",165,152);ctx.fillStyle="#ffd166";ctx.font="bold 14px Arial";ctx.fillText(wn?"Cấp bậc: Vĩnh Kết Đồng Tâm 💎":"Đã vượt qua: "+mIdx+"/24 tháng",165,182);ctx.fillStyle="#fff";ctx.font="13px Arial";ctx.fillText("Danh hiệu: "+rks.at(Math.min(mIdx,23)),165,208);ctx.fillText("Kỷ lục cá nhân: "+topM+"/24 tháng",165,232);ctx.fillStyle="#b7e4c7";ctx.font="11px Arial";ctx.fillText("Tác giả: Niê Ngọc Hiếu - Phố Đi Bộ Ea Kao",165,264);ctx.fillStyle=canR?"#ffd166":"#888";ctx.font="bold 14px Arial";ctx.fillText(canR?"👉 Chạm màn hình để chơi lại":"⏳ Đang lưu thành tích...",165,310);}
 requestAnimationFrame(loop);}loop();
 </script>
 </body>
